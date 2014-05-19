@@ -7,12 +7,11 @@ var Bot = new Twit({
   , access_token_secret: 'Zedo7zADU9HpOy3qeSB6jIhSwttJcHUtHqSWOOCs9QrBK'
 })
 
-setInterval(function() {
+var tweetSearch = function() {
   Bot.get('search/tweets', {q: 'test', count: 1}, function(err, data, response) {
-    console.log(data)
+    return data
   })  
-}, 3000)
-
+}
 // var i = 0
 
 // setInterval(function() {
