@@ -8,7 +8,7 @@ var Bot = new Twit({
 })
 
 var tweetSearch = function() {
-  Bot.get('search/tweets', {q: 'test', count: 1}, function(err, data, response) {
+  Bot.get('search/tweets', {q: 'test ', count: 1}, function(err, data, response) {
     return data
   })  
 }

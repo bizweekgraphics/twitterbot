@@ -25,7 +25,7 @@ var Bot = new Twit({
 })
 
 var tweetSearch = function(callback) {
-  Bot.get('search/tweets', {q: 'test', count: 1}, function(err, data, response) {
+  Bot.get('search/tweets', {q: 'fcc since:2014-5-19', count: 100}, function(err, data, response) {
     callback(data)
   })  
 }
