@@ -1,15 +1,23 @@
-// var response;
+var response;
 
 // $(document).ready(function() {
 //   $.getJSON('/test', function(data) {
 //     response = data
-//     response.test.statuses.forEach(function(status) {
-//       $('body').append(status.text)
-//       $('body').append('<br>')
-//       $('body').append('<br>')
-//     })
+//     console.log(data)
+//     // response.test.statuses.forEach(function(status) {
+//     //   $('body').append(status.text)
+//     //   $('body').append('<br>')
+//     //   $('body').append('<br>')
+//     // })
 //   });
 // });
+  var socket = io.connect('/');
+
+$(document).ready(function() {
+  socket.on('tweet', function(data) {
+    console.log(data)
+  })
+})
 
 var project
 
