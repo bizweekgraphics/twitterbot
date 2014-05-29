@@ -24,12 +24,24 @@ app.get('/', function(req, res) {
 })
 
 app.get('/test', function(req, res) {
+  var re = /\bthen.+[.,!?]( |\z)/i
+  var re2 = /\bthen.+/i
+  var response = []
   tweetSearch(function(data) {
-    res.send({
-      test: data
+    data.statuses.forEach(function(tweet) {
+      if(re.test(tweet.text)) {
+        var text = tweet.text.match(re)[0]
+        response.push(text)
+      } else {
+        var text = tweet.text.match(re2)[0]
+        response.push(text)
+      }
     })
-  })
-})
+    res.send({
+      test: response
+    });
+  });
+});
 
 app.get('/ifthen', function(req, res) {
   var db = req.db;
