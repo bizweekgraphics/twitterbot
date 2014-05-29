@@ -9,6 +9,7 @@ var server = http.createServer(app)
 var mongo = require('mongodb')
 var monk = require('monk')
 var db = monk('localhost:27017/fcc_database')
+var _ = require('underscore')
 
 app.use(express.static(__dirname + '/public'));
 
@@ -33,8 +34,11 @@ app.get('/test', function(req, res) {
         var text = tweet.text.match(re)[0]
         response.push(text)
       } else {
-        var text = tweet.text.match(re2)[0]
-        response.push(text)
+        var text = tweet.text.match(re2)
+        if(text) {
+          text = text[0]
+          response.push(text)
+        }
       }
     })
     res.send({
@@ -47,10 +51,15 @@ app.get('/ifthen', function(req, res) {
   var db = req.db;
   var collection = db.get('comments');
   var re = /\bif.*?,/i
-  collection.find({text: /\bif\b.*?,/i}, {limit: 10}, function(e, docs) {
+  collection.find({text: /\bif\b.*?,/i}, function(e, docs) {
+    docs = _.shuffle(docs)
+    docs = docs.slice(0, 20)
     response = []
     docs.forEach(function(comment) {
-      response.push(comment.text.match(re)[0])
+      var text = comment.text.match(re)[0]
+      if(text.length < 140) {
+        response.push(text)
+      }
     })
     res.send({
       dbstuff: response
@@ -69,7 +78,7 @@ var Bot = new Twit({
 
 
 var tweetSearch = function(callback) {
-  Bot.get('search/tweets', {q: 'if then', count: 10}, function(err, data, response) {
+  Bot.get('search/tweets', {q: 'if then', count: 20}, function(err, data, response) {
     callback(data)
   })  
 }

@@ -24,9 +24,12 @@ $(document).ready(function() {
   })
 
   var createTweets = function(fcc, twit) {
+    fcc = _.shuffle(fcc)
     fcc.forEach(function(comment, index) {
-      var text = comment + twit[index]
-      $('.tweets').append('<li>' + text + '</li>')
+      var text = comment + ' ' + twit[index]
+      if(text.length < 140){
+        $('.tweets').append('<li>' + text + '</li>')
+      }
     })
   }
 
