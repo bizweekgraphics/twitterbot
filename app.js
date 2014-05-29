@@ -6,7 +6,16 @@ var http = require('http')
 var server = http.createServer(app)
 var io = require('socket.IO').listen(server)
 
+var mongo = require('mongodb')
+var monk = require('monk')
+var db = monk('localhost:27017/fcc_database')
+
 app.use(express.static(__dirname + '/public'));
+
+app.use(function(req, res, next) {
+  req.db = db;
+  next();
+})
 
 server.listen(process.env.PORT || 4000);
 
@@ -22,6 +31,16 @@ app.get('/test', function(req, res) {
   })
 })
 
+app.get('/dbtest', function(req, res) {
+  var db = req.db;
+  var collection = db.get('comments');
+  collection.find({},{}, function(e, docs) {
+    res.send({
+      dbstuff: docs
+    })
+  })
+})
+
 var Twit = require('twit')
 
 var Bot = new Twit({
@@ -31,17 +50,11 @@ var Bot = new Twit({
   , access_token_secret: 'Zedo7zADU9HpOy3qeSB6jIhSwttJcHUtHqSWOOCs9QrBK'
 })
 
-// var tweetSearch = function(callback) {
-//   Bot.get('search/tweets', {q: 'fcc since:2014-5-19', count: 100}, function(err, data, response) {
-//     callback(data)
-//   })  
-// }
 
-// -180,-90,180,90
+var tweetSearch = function(callback) {
+  Bot.get('search/tweets', {q: 'fcc since:2014-5-19', count: 100}, function(err, data, response) {
+    callback(data)
+  })  
+}
 
-Bot.stream('statuses/filter', { track: 'hey', locations: ['-180', '-90', '180', '90']}, function(stream) {
-  stream.on('data', function(data) {
-    io.sockets.emit(tweet, data.text)
-    console.log('TEST')
-  })
-})
+
