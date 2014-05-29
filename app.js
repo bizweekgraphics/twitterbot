@@ -4,7 +4,7 @@ var express = require('express');
 var app = express()
 var http = require('http')
 var server = http.createServer(app)
-var io = require('socket.IO').listen(server)
+// var io = require('socket.IO').listen(server)
 
 var mongo = require('mongodb')
 var monk = require('monk')
@@ -31,12 +31,17 @@ app.get('/test', function(req, res) {
   })
 })
 
-app.get('/dbtest', function(req, res) {
+app.get('/ifthen', function(req, res) {
   var db = req.db;
   var collection = db.get('comments');
-  collection.find({},{}, function(e, docs) {
+  var re = /\bif.*?,/i
+  collection.find({text: /\bif\b.*?,/i}, {limit: 10}, function(e, docs) {
+    response = []
+    docs.forEach(function(comment) {
+      response.push(comment.text.match(re)[0])
+    })
     res.send({
-      dbstuff: docs
+      dbstuff: response
     })
   })
 })
@@ -52,7 +57,7 @@ var Bot = new Twit({
 
 
 var tweetSearch = function(callback) {
-  Bot.get('search/tweets', {q: 'fcc since:2014-5-19', count: 100}, function(err, data, response) {
+  Bot.get('search/tweets', {q: 'if then', count: 10}, function(err, data, response) {
     callback(data)
   })  
 }
