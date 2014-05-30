@@ -1,7 +1,3 @@
-var fccResponse;
-var twitResponse;
-var re = /\bif.*?,/i
-
 $(document).ready(function() {
 
   setInterval(function() {
@@ -12,7 +8,7 @@ $(document).ready(function() {
     }
 
     function getTwit() {
-      return $.getJSON('/test').pipe(function(tasks, status, jqXHR) {
+      return $.getJSON('/then_tweet').pipe(function(tasks, status, jqXHR) {
         return tasks
       })
     }
@@ -24,9 +20,7 @@ $(document).ready(function() {
         console.log("You still don't understand promises")
     })
   }, 120000)
-
-
-
+  
 });
 
 

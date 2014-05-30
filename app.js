@@ -11,9 +11,10 @@ var db = monk('localhost:27017/fcc_database')
 var _ = require('underscore')
 
 //load my libs
-var t = require('./tweet.js')
+var t = require('./helpers/tweet.js')
 var twitter = new t()
-
+var p = require('./helpers/tweet_parse.js')
+var parse = new p()
 
 app.use(express.static(__dirname + '/public'));
 
@@ -31,26 +32,15 @@ app.get('/', function(req, res) {
   res.sendfile(__dirname + '/index.html')
 })
 
-app.get('/test', function(req, res) {
-  var re = /\bthen.+[.,!?]( |\z)/i
-  var re2 = /\bthen.{2,}/i
-  var reEllipsis = /(\.\.\.)/
+app.get('/then_tweet', function(req, res) {
   var response = []
-  tweetSearch(function(data) {
+  twitter.tweetSearch('if then', function(data) {
     data.statuses.forEach(function(tweet) {
-      if(re.test(tweet.text)) {
-        var text = tweet.text.match(re)[0]
+      var text = parse.parseTweet(tweet.text)
+      if(text) {
         response.push(text)
-      } else if(reEllipsis.test(tweet.text)) {
-        return
-      } else {
-        var text = tweet.text.match(re2)
-        if(text) {
-          text = text[0]
-          response.push(text)
-        }
-      }
-    })
+      };
+    });
     res.send({
       test: response
     });
@@ -85,12 +75,19 @@ app.get('/tweet', function(req, res) {
   })
 })
 
-var tweetSearch = function(callback) {
-  twitter.Bot.get('search/tweets', {q: 'if then', count: 20}, function(err, data, response) {
-    callback(data)
-  })  
-}
+app.get('/find_fcc', function(req, res) {
+  twitter.tweetSearch('#fcc', function(data) {
 
+  })
+})
+
+var generate = function(filePath, length) {
+  var childProcess = require('child_process')
+  var python = childProcess.exec('python generate_text.py ' + filePath + ' ' + length, function(error, stdout, stderr) {
+    text = stdout
+    text = text.replace(/(\r\n|\n|\r)/gm,"");
+  })
+}
 
 
 
