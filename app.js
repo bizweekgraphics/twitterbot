@@ -51,7 +51,7 @@ app.get('/ifthen', function(req, res) {
   var db = req.db;
   var collection = db.get('comments');
   var re = /\bif.*?,/i
-  collection.find({text: /\bif\b.*?,/i}, function(e, docs) {
+  collection.find({text: re}, function(e, docs) {
     docs = _.shuffle(docs)
     docs = docs.slice(0, 20)
     response = []
