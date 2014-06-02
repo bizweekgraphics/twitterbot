@@ -25,10 +25,11 @@ $(document).ready(function() {
 
 
 var createTweets = function(fcc, twit, callback) {
+  console.log(twit)
   fcc = _.shuffle(fcc)
   tweets = []
-  fcc.forEach(function(comment, index) {
-    var text = comment + ' ' + twit[index]
+  twit.forEach(function(tweet, index) {
+    var text = fcc[index] + ' ' + tweet
     if(text.length < 140){
       $('.tweets').append('<li>' + text + '</li>')
       tweets.push(text)
