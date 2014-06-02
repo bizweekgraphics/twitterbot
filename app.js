@@ -5,7 +5,13 @@ var http = require('http')
 var server = http.createServer(app)
 var mongo = require('mongodb')
 var monk = require('monk')
-var db = monk('localhost:27017/fcc_database')
+
+var mongoUri = process.env.MONGOLAB_URI ||
+  process.env.MONGOHQ_URL ||
+  'mongodb://localhost/mydb';
+
+var db = monk(mongoUri)
+
 
 //load utilities
 var _ = require('underscore')
@@ -77,6 +83,7 @@ app.get('/tweet', function(req, res) {
 
 app.get('/find_fcc', function(req, res) {
   twitter.tweetSearch('#fcc', function(data) {
+    data.statuses
 
   })
 })
