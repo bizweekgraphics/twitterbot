@@ -7,7 +7,7 @@ var CommentParse = function() {
     if(reEllipsis.test(tweet)) {
       return null
     } else if(re.test(tweet)) {
-      var text = tweet.text.match(re)[0]
+      var text = tweet.match(re)[0]
       return text
     } else {
       var text = tweet.match(re2)

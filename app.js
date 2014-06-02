@@ -8,7 +8,7 @@ var monk = require('monk')
 
 var mongoUri = process.env.MONGOLAB_URI ||
   process.env.MONGOHQ_URL ||
-  'mongodb://localhost/mydb';
+  'mongodb://localhost:27017/fcc_database';
 
 var db = monk(mongoUri)
 
@@ -41,7 +41,7 @@ app.get('/', function(req, res) {
 app.get('/then_tweet', function(req, res) {
   var response = []
   twitter.tweetSearch('if then', function(data) {
-    data.statuses.forEach(function(tweet) {
+    data.forEach(function(tweet) {
       var text = parse.parseTweet(tweet.text)
       if(text) {
         response.push(text)
@@ -83,8 +83,7 @@ app.get('/tweet', function(req, res) {
 
 app.get('/find_fcc', function(req, res) {
   twitter.tweetSearch('#fcc', function(data) {
-    data.statuses
-
+    console.log(data)
   })
 })
 

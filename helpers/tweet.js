@@ -8,9 +8,9 @@ var Twitter = function() {
   , access_token_secret: 'Zedo7zADU9HpOy3qeSB6jIhSwttJcHUtHqSWOOCs9QrBK'
   })
 
-  var tweetSearch = function(query, callback) {
+  this.tweetSearch = function(query, callback) {
     this.Bot.get('search/tweets', {q: query, count: 20}, function(err, data, response) {
-      callback(data)
+      callback(data.statuses)
     });  
   };
 

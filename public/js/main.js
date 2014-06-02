@@ -1,6 +1,6 @@
 $(document).ready(function() {
 
-  setInterval(function() {
+  // setInterval(function() {
     function getFcc() {
       return $.getJSON('/ifthen').pipe(function(tasks, status, jqXHR) {
         return tasks
@@ -19,7 +19,7 @@ $(document).ready(function() {
       .fail(function() {
         console.log("You still don't understand promises")
     })
-  }, 120000)
+  // }, 120000)
   
 });
 
