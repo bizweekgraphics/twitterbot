@@ -25,13 +25,11 @@ $(document).ready(function() {
 
 
 var createTweets = function(fcc, twit, callback) {
-  console.log(twit)
   twit = _.flatten(twit)
   fcc = _.flatten(fcc)
   fcc = _.shuffle(fcc)
   tweets = []
   twit.forEach(function(tweet, index) {
-    console.log(fcc[index])
     var fccText = fcc[index].replace(/if/i, 'If')
     var tweetText = tweet.replace(/then/i, 'then')
     var text = fccText + ' ' + tweetText
@@ -45,6 +43,7 @@ var createTweets = function(fcc, twit, callback) {
 
 var tweet = function(tweet) {
     $.getJSON('/tweet', {text: tweet}, function() {
+      console.log(tweet)
       console.log('success')
     })
 }

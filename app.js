@@ -21,6 +21,8 @@ var t = require('./helpers/tweet.js')
 var twitter = new t()
 var p = require('./helpers/tweet_parse.js')
 var parse = new p()
+var pFilter = require('./helpers/profanity_filter.js')
+var profanity = new pFilter()
 
 app.use(express.static(__dirname + '/public'));
 
@@ -75,6 +77,7 @@ app.get('/ifthen', function(req, res) {
 
 app.get('/tweet', function(req, res) {
   var text = (req.query['text'])
+  text = profanity.replaceProfanity(text)
   twitter.Bot.post('statuses/update', { status: text}, function(err, data, response) {
     res.send({
     })    
