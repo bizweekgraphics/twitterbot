@@ -23,6 +23,8 @@ var p = require('./helpers/tweet_parse.js')
 var parse = new p()
 var pFilter = require('./helpers/profanity_filter.js')
 var profanity = new pFilter()
+var elizabot = require('./helpers/eliza.js')
+
 
 app.use(express.static(__dirname + '/public'));
 
@@ -89,6 +91,25 @@ app.get('/find_fcc', function(req, res) {
     console.log(data)
   })
 })
+
+var stream = twitter.Bot.stream('user')
+
+stream.on('tweet', function(tweet) {
+  console.log('------------------------------------------------')
+  var reply = tweet.in_reply_to_user_id
+  if(reply && tweet.user.screen_name != 'test43523' && /\?/.test(tweet.text)) {
+    var status = elizabot.reply(tweet.text)
+    twitter.Bot.post('statuses/update', {status: "@" + tweet.user.screen_name + ' ' + status, in_reply_to_status_id: tweet.id_str, replies: 'all'}, function(err, data, response) {
+    })
+  }
+})
+
+// var tweetText = function(text) {
+//   text = profanity.replaceProfanity(text)
+//   twitter.Bot.post('status/update', {status: text})
+//   })
+// }
+
 
 var generate = function(filePath, length) {
   var childProcess = require('child_process')
