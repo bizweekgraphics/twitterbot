@@ -15,6 +15,7 @@ var db = monk(mongoUri)
 
 //load utilities
 var _ = require('underscore')
+var Q = require("q");
 
 //load my libs
 var t = require('./helpers/tweet.js')
@@ -24,6 +25,8 @@ var parse = new p()
 var pFilter = require('./helpers/profanity_filter.js')
 var profanity = new pFilter()
 var elizabot = require('./helpers/eliza.js')
+// var ifThenMod = require('./helpers/ifthen.js')
+// var ifThen = new ifThenMod()
 
 
 app.use(express.static(__dirname + '/public'));
@@ -104,12 +107,6 @@ stream.on('tweet', function(tweet) {
   }
 })
 
-// var tweetText = function(text) {
-//   text = profanity.replaceProfanity(text)
-//   twitter.Bot.post('status/update', {status: text})
-//   })
-// }
-
 
 var generate = function(filePath, length) {
   var childProcess = require('child_process')
@@ -118,6 +115,89 @@ var generate = function(filePath, length) {
     text = text.replace(/(\r\n|\n|\r)/gm,"");
   })
 }
+
+debugger;
+
+
+
+
+
+var IfThen = function() {
+
+  this.getFcc = function() {
+    var deferred = Q.defer()
+    var collection = db.get('comments');
+    console.log(db)
+    var re = /\bif[ ][a-zA-Z  ']+,/i
+    collection.find({text: re}, function(e, docs) {
+      docs = _.shuffle(docs)
+      docs = docs.slice(0, 20)
+      response = []
+      docs.forEach(function(comment) {
+        var text = comment.text.match(re)[0]
+        if(text.length < 140) {
+          response.push(text)
+        }
+      })
+      deferred.resolve(response)
+    })
+    return deferred.proimse
+  }
+
+  this.getTweet = function() {
+    var deferred = Q.defer()
+    var response = []
+    twitter.tweetSearch('if then', function(data) {
+      data.forEach(function(tweet) {
+        var text = parse.parseTweet(tweet.text)
+        if(text) {
+          response.push(text)
+        };
+      });
+    deferred.resolve(response)
+    });
+    return deferred.promise
+  }
+
+  this.createTweets = function() {
+    Q.all([this.getFcc(), this.getTweet()]).then(function(fcc, tweet) {
+      console.log('=======================')
+      console.log(this.createText(fcc, tweet))
+      console.log('======================')
+    })
+  }
+
+  this.createText = function(tweets, fcc) {
+    tweetArray = []
+    tweets.forEach(function(tweet, index) {
+      var fccText = fcc[index].replace(/if/i, 'If')
+      var tweetText = tweet.replace(/then/i, 'then')
+      var text = fccText + ' ' + tweetText
+      if(text.length < 140){
+        tweetArray.push(text)
+      }
+    })
+    return tweetArray
+  }
+
+}
+
+var test = new IfThen()
+test.createTweets()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
