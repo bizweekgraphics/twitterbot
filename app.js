@@ -98,7 +98,6 @@ app.get('/find_fcc', function(req, res) {
 var stream = twitter.Bot.stream('user')
 
 stream.on('tweet', function(tweet) {
-  console.log('------------------------------------------------')
   var reply = tweet.in_reply_to_user_id
   if(reply && tweet.user.screen_name != 'test43523') {
     var status = elizabot.reply(tweet.text)
@@ -116,12 +115,18 @@ var generate = function(filePath, length) {
   })
 }
 
+ifThen.createTweets().then(function(tweet) {
+  console.log('===============================================')
+  console.log(tweet)
+  console.log('===============================================')
 
-
-ifThen.createTweets()
-
-
-
+  twitter.Bot.post('statuses/update', {status: tweet}, function(err, data, response) {
+    console.log('success')
+  }), function(error) {
+    console.log(error)
+    console.log('???????????????????????????????????')
+  }
+})
 
 
 

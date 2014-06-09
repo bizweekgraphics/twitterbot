@@ -33,7 +33,6 @@ var IfThen = function() {
         }
       })
       deferred.resolve(response)
-      console.log('fcc success')
     })
     return deferred.promise
   }
@@ -45,37 +44,46 @@ var IfThen = function() {
       data.forEach(function(tweet) {
         var text = parse.parseTweet(tweet.text)
         if(text) {
-          response.push(tweet.text)
+          response.push(text)
         };
       });
     deferred.resolve(response)
-    console.log('tweet success')
     });
     return deferred.promise
   }
 
 
   this.createText = function(tweets, fcc) {
-    console.log('entering createtext')
-    console.log(tweets.length)
+    try {
     for(var i=0; i < tweets.length; i++) {
+      console.log('ENTERING FOR LOOP')
       var fccText = fcc[i].replace(/if/i, 'If')
       var tweetText = tweets[i].replace(/then/i, 'then')
       var text = fccText + ' ' + tweetText
       if(text.length < 140){
+        console.log('CREATED TEXT SHORTER THAN 140 CHARS')
         return text
         break;
       }
     }
+    } catch(e) {
+      console.log(e)
+      console.log('ERRORERRORREOREORORO')
+    }
   }
 
   this.createTweets = function() {
+    var deferred = Q.defer()
     Q.all([this.getFcc(), this.getTweet()]).then(function(data) {
+      console.log('DATA RECEIVED')
       var fcc = _.shuffle(data[0])
-      var tweets = _.shuffle(data[1])
+      var flatTweets = _.flatten(data[1])
+      var tweets = _.shuffle(flatTweets)
       var tweetText = self.createText(tweets, fcc)
-      return tweetText
+      console.log('TWEET TEXT CREATED')
+      deferred.resolve(tweetText)
     })
+  return deferred.promise
   }
 
 }
