@@ -91,7 +91,7 @@ var TweetGenerate = function() {
       for(var i=0; i < docs.length; i++) {
         matchArray = docs[i].text.match(sentence)
         matchArray.forEach(function(match) {
-          if(match.length < 140 && /(FCC|fcc)/.test(match)) {
+          if(match.length < 140 && /(FCC|fcc|Neutrality|neutrality)/.test(match)) {
             tweet = match
           }
         })
