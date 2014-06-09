@@ -15,7 +15,7 @@ var db = monk(mongoUri)
 var comments = db.get('comments')
 
 
-var IfThen = function() {
+var TweetGenerate = function() {
 
   var self = this
 
@@ -56,37 +56,56 @@ var IfThen = function() {
   this.createText = function(tweets, fcc) {
     try {
     for(var i=0; i < tweets.length; i++) {
-      console.log('ENTERING FOR LOOP')
       var fccText = fcc[i].replace(/if/i, 'If')
       var tweetText = tweets[i].replace(/then/i, 'then')
       var text = fccText + ' ' + tweetText
       if(text.length < 140){
-        console.log('CREATED TEXT SHORTER THAN 140 CHARS')
         return text
         break;
       }
     }
     } catch(e) {
       console.log(e)
-      console.log('ERRORERRORREOREORORO')
     }
   }
 
   this.createTweets = function() {
     var deferred = Q.defer()
     Q.all([this.getFcc(), this.getTweet()]).then(function(data) {
-      console.log('DATA RECEIVED')
       var fcc = _.shuffle(data[0])
       var flatTweets = _.flatten(data[1])
       var tweets = _.shuffle(flatTweets)
       var tweetText = self.createText(tweets, fcc)
-      console.log('TWEET TEXT CREATED')
       deferred.resolve(tweetText)
     })
   return deferred.promise
   }
 
+  this.fccTweet = function() {
+    var deferred = Q.defer()
+    var tweet;
+    comments.find({text: /FCC/}, function(e, docs) {
+      var sentence = /[^.!?\s][^.!?]*(?:[.!?](?!['"]?\s|$)[^.!?]*)*[.!?]?['"]?(?=\s|$)/g
+      docs = _.shuffle(docs)
+      docs = docs.slice(0, 20)
+      for(var i=0; i < docs.length; i++) {
+        matchArray = docs[i].text.match(sentence)
+        matchArray.forEach(function(match) {
+          if(match.length < 140 && /(FCC|fcc)/.test(match)) {
+            tweet = match
+          }
+        })
+        if(tweet) {
+          deferred.resolve(tweet)
+        }
+      }
+    })
+    return deferred.promise
+  }
+
+
+
 }
 
 
-module.exports = IfThen
+module.exports = TweetGenerate
