@@ -16,6 +16,8 @@ var db = monk(mongoUri)
 //load utilities
 var _ = require('underscore')
 var Q = require("q");
+var fs = require('fs')
+var dom = require('dom-js')
 
 //load my libs
 var t = require('./helpers/tweet.js')
@@ -27,7 +29,6 @@ var profanity = new pFilter()
 var elizabot = require('./helpers/eliza.js')
 var tg = require('./helpers/tg.js')
 var tweetGenerate = new tg()
-
 
 app.use(express.static(__dirname + '/public'));
 
@@ -48,7 +49,14 @@ stream.on('tweet', function(tweet) {
   var reply = tweet.in_reply_to_user_id
   if(reply && tweet.user.screen_name != 'test43523') {
     var text = tweet.text.replace(/@\w*/, '').trim()
-    if(Math.random() > 0.5) {
+    var random = Math.random()
+    if(random <= 0.85) {
+      console.log('ALICE')
+      generate_alice(text, function(status) {
+        twitter.Bot.post('statuses/update', {status: "@" + tweet.user.screen_name + ' ' + status, in_reply_to_status_id: tweet.id_str, replies: 'all'}, function(err, data, response) {
+        })
+      })
+    } else if (random > 0.85) {
       console.log('RUDE')
       generate_rude(text, function(status) {
         twitter.Bot.post('statuses/update', {status: "@" + tweet.user.screen_name + ' ' + status, in_reply_to_status_id: tweet.id_str, replies: 'all'}, function(err, data, response) {
@@ -57,8 +65,10 @@ stream.on('tweet', function(tweet) {
     } else {
       console.log('ELIZA')
       var status = elizabot.reply(text)
-      twitter.Bot.post('statuses/update', {status: "@" + tweet.user.screen_name + ' ' + status, in_reply_to_status_id: tweet.id_str, replies: 'all'}, function(err, data, response) {
-      })
+      // aiml.findAnswerInLoadedAIMLFiles(text, function(status) {
+        twitter.Bot.post('statuses/update', {status: "@" + tweet.user.screen_name + ' ' + status, in_reply_to_status_id: tweet.id_str, replies: 'all'}, function(err, data, response) {
+        })   
+      // })
     }
   }
 })
@@ -93,6 +103,15 @@ var generate_rude = function(query, callback) {
     callback(stdout)
   })
 }
+
+var generate_alice = function(query, callback) {
+  var childProcess = require('child_process')
+  var python = childProcess.exec('python alice.py ' + '"'  + query + '"', function(error, stdout, stderr) {
+    console.log(stdout)
+    callback(stdout)
+  })
+}
+
 
 
 
