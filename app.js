@@ -50,9 +50,13 @@ stream.on('tweet', function(tweet) {
   if(reply && tweet.user.screen_name != 'test43523') {
     var text = tweet.text.replace(/@\w*/, '').trim()
     if(/(neutrality)/i.test(text)) {
-      tweetGenerate.neutralityTweet().then(function(tweet) {
-        postTweet(tweet)
+      tweetGenerate.getSubjectTweet('neutrality').then(function(status) {
+        tweetReply(tweet, status)
       })
+    } else if(/(fcc)/i.test(text)) {
+        tweetGenerate.getSubjectTweet('fcc').then(function(status) {
+          tweetReply(tweet, status)
+        })
     } else {
       var random = Math.random()
       if(random <= 0.85) {
@@ -60,16 +64,12 @@ stream.on('tweet', function(tweet) {
         generate_alice(text, function(status) {
           tweetReply(tweet, status)
         })
-      } else if (random > 0.85) {
+      } else {
         console.log('RUDE')
         generate_rude(text, function(status) {
           tweetReply(tweet, status)
         })
-      } else {
-        console.log('ELIZA')
-        var status = elizabot.reply(text)
-        tweetReply(status)  
-      }
+      } 
     }
   }
 })
@@ -91,10 +91,18 @@ setInterval(function() {
 
 //Generates a tweet directly from the fcc comments database
 setInterval(function() {
-  tweetGenerate.fccTweet().then(function(tweet) {
+  tweetGenerate.getSubjectTweet('fcc').then(function(tweet) {
     postTweet(tweet)
   })
 }, 1000000)
+
+
+//Generates a tweet directly from fcc comments about net neutrality
+setInterval(function() {
+  tweetGenerate.getSubjectTweet('neutrality').then(function(tweet) {
+    postTweet(tweet)
+  })
+}, 1500000)
 
 //Calls a python script that accepts an a query and responds appropriatelyish
 var generate_rude = function(query, callback) {
