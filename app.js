@@ -49,22 +49,27 @@ stream.on('tweet', function(tweet) {
   var reply = tweet.in_reply_to_user_id
   if(reply && tweet.user.screen_name != 'test43523') {
     var text = tweet.text.replace(/@\w*/, '').trim()
-    var random = Math.random()
-    if(random <= 0.85) {
-      console.log('ALICE')
-      generate_alice(text, function(status) {
-        tweetReply(tweet, status)
-      })
-    } else if (random > 0.85) {
-      console.log('RUDE')
-      generate_rude(text, function(status) {
-        tweetReply(tweet, status)
+    if(/(neutrality)/i.test(text)) {
+      tweetGenerate.neutralityTweet().then(function(tweet) {
+        postTweet(tweet)
       })
     } else {
-      console.log('ELIZA')
-      var status = elizabot.reply(text)
-        twitter.Bot.post('statuses/update', {status: "@" + tweet.user.screen_name + ' ' + status, in_reply_to_status_id: tweet.id_str, replies: 'all'}, function(err, data, response) {
-        })   
+      var random = Math.random()
+      if(random <= 0.85) {
+        console.log('ALICE')
+        generate_alice(text, function(status) {
+          tweetReply(tweet, status)
+        })
+      } else if (random > 0.85) {
+        console.log('RUDE')
+        generate_rude(text, function(status) {
+          tweetReply(tweet, status)
+        })
+      } else {
+        console.log('ELIZA')
+        var status = elizabot.reply(text)
+        tweetReply(status)  
+      }
     }
   }
 })
@@ -76,14 +81,15 @@ var tweetReply = function(tweet, status) {
 }
 
 
-
-
+//Generates an if then tweet at the provided interval
 setInterval(function() {
   tweetGenerate.createTweets().then(function(tweet) {
     postTweet(tweet)
   })
 }, 2000000)
 
+
+//Generates a tweet directly from the fcc comments database
 setInterval(function() {
   tweetGenerate.fccTweet().then(function(tweet) {
     postTweet(tweet)

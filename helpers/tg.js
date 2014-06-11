@@ -91,7 +91,29 @@ var TweetGenerate = function() {
       for(var i=0; i < docs.length; i++) {
         matchArray = docs[i].text.match(sentence)
         matchArray.forEach(function(match) {
-          if(match.length < 140 && /(FCC|fcc|Neutrality|neutrality)/.test(match)) {
+          if(match.length < 140 && /(FCC|neutrality)/i.test(match)) {
+            tweet = match
+          }
+        })
+        if(tweet) {
+          deferred.resolve(tweet)
+        }
+      }
+    })
+    return deferred.promise
+  }
+
+  this.neutralityTweet = function() {
+    var deferred = Q.defer()
+    var tweet;
+    comments.find({text: /neutrality/}, function(e, docs) {
+      var sentence = /[^.!?\s][^.!?]*(?:[.!?](?!['"]?\s|$)[^.!?]*)*[.!?]?['"]?(?=\s|$)/g
+      docs = _.shuffle(docs)
+      docs = docs.slice(0, 20)
+      for(var i=0; i < docs.length; i++) {
+        matchArray = docs[i].text.match(sentence)
+        matchArray.forEach(function(match) {
+          if(match.length < 140 && /(neutrality)/i.test(match)) {
             tweet = match
           }
         })
