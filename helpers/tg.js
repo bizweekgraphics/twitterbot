@@ -86,7 +86,6 @@ var TweetGenerate = function() {
     var deferred = Q.defer()
     var tweet;
     var subjectRe = new RegExp(subject, 'i')
-    console.log(subjectRe)
     comments.find({text: subjectRe}, function(e, docs) {
       var sentence = /[^.!?\s][^.!?]*(?:[.!?](?!['"]?\s|$)[^.!?]*)*[.!?]?['"]?(?=\s|$)/g
       docs = _.shuffle(docs)
