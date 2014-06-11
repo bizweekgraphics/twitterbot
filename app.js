@@ -53,25 +53,27 @@ stream.on('tweet', function(tweet) {
     if(random <= 0.85) {
       console.log('ALICE')
       generate_alice(text, function(status) {
-        twitter.Bot.post('statuses/update', {status: "@" + tweet.user.screen_name + ' ' + status, in_reply_to_status_id: tweet.id_str, replies: 'all'}, function(err, data, response) {
-        })
+        tweetReply(tweet, status)
       })
     } else if (random > 0.85) {
       console.log('RUDE')
       generate_rude(text, function(status) {
-        twitter.Bot.post('statuses/update', {status: "@" + tweet.user.screen_name + ' ' + status, in_reply_to_status_id: tweet.id_str, replies: 'all'}, function(err, data, response) {
-        })
+        tweetReply(tweet, status)
       })
     } else {
       console.log('ELIZA')
       var status = elizabot.reply(text)
-      // aiml.findAnswerInLoadedAIMLFiles(text, function(status) {
         twitter.Bot.post('statuses/update', {status: "@" + tweet.user.screen_name + ' ' + status, in_reply_to_status_id: tweet.id_str, replies: 'all'}, function(err, data, response) {
         })   
-      // })
     }
   }
 })
+
+var tweetReply = function(tweet, status) {
+  status = profanity.replaceProfanity(status)
+  twitter.Bot.post('statuses/update', {status: "@" + tweet.user.screen_name + ' ' + status, in_reply_to_status_id: tweet.id_str, replies: 'all'}, function(err, data, response) {
+  })
+}
 
 
 
@@ -88,14 +90,7 @@ setInterval(function() {
   })
 }, 1000000)
 
-// var generate = function(filePath, length) {
-//   var childProcess = require('child_process')
-//   var python = childProcess.exec('python generate_text.py ' + filePath + ' ' + length, function(error, stdout, stderr) {
-//     text = stdout
-//     text = text.replace(/(\r\n|\n|\r)/gm,"");
-//   })
-// }
-
+//Calls a python script that accepts an a query and responds appropriatelyish
 var generate_rude = function(query, callback) {
   var childProcess = require('child_process')
   var python = childProcess.exec('python generate_rude_text.py ' + '"'  + query + '"', function(error, stdout, stderr) {
@@ -104,6 +99,7 @@ var generate_rude = function(query, callback) {
   })
 }
 
+//Calls a python script that accepts an a query and responds appropriatelyish
 var generate_alice = function(query, callback) {
   var childProcess = require('child_process')
   var python = childProcess.exec('python alice.py ' + '"'  + query + '"', function(error, stdout, stderr) {
@@ -112,9 +108,7 @@ var generate_alice = function(query, callback) {
   })
 }
 
-
-
-
+//Tweets whatever argument is passed into function
 var postTweet = function(tweet) {
   tweet = profanity.replaceProfanity(tweet)
   twitter.Bot.post('statuses/update', {status: tweet}, function(err, data, response) {
