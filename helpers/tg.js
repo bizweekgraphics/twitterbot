@@ -9,7 +9,7 @@ var parse = new p()
 
 var mongoUri = process.env.MONGOLAB_URI ||
   process.env.MONGOHQ_URL ||
-  'mongodb://localhost:27017/fcc_database';
+  'mongodb://localhost:27017/fcc_with_links';
 
 var db = monk(mongoUri)
 var comments = db.get('comments')
@@ -28,7 +28,7 @@ var TweetGenerate = function() {
       response = []
       docs.forEach(function(comment) {
         var text = comment.text.match(re)[0]
-        if(text.length < 140) {
+        if(text.length < 120) {
           response.push(text)
         }
       })
@@ -59,7 +59,7 @@ var TweetGenerate = function() {
       var fccText = fcc[i].replace(/if/i, 'If')
       var tweetText = tweets[i].replace(/then/i, 'then')
       var text = fccText + ' ' + tweetText
-      if(text.length < 140){
+      if(text.length < 120){
         return text
         break;
       }
@@ -83,6 +83,7 @@ var TweetGenerate = function() {
 
   //finds a tweet from the database containing the subject word
   this.getSubjectTweet = function(subject) {
+    console.log(subject)
     var deferred = Q.defer()
     var tweet;
     var subjectRe = new RegExp(subject, 'i')
@@ -93,8 +94,8 @@ var TweetGenerate = function() {
       for(var i=0; i < docs.length; i++) {
         matchArray = docs[i].text.match(sentence)
         matchArray.forEach(function(match) {
-          if(match.length < 140 && subjectRe.test(match)) {
-            tweet = match
+          if(match.length < 120 && subjectRe.test(match)) {
+            tweet = match + ' ' + docs[i].url
           }
         })
         if(tweet) {

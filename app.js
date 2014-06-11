@@ -8,7 +8,7 @@ var monk = require('monk')
 
 var mongoUri = process.env.MONGOLAB_URI ||
   process.env.MONGOHQ_URL ||
-  'mongodb://localhost:27017/fcc_database';
+  'mongodb://localhost:27017/fcc_with_links';
 
 var db = monk(mongoUri)
 
@@ -49,14 +49,11 @@ stream.on('tweet', function(tweet) {
   var reply = tweet.in_reply_to_user_id
   if(reply && tweet.user.screen_name != 'test43523') {
     var text = tweet.text.replace(/@\w*/, '').trim()
-    if(/(neutrality)/i.test(text)) {
-      tweetGenerate.getSubjectTweet('neutrality').then(function(status) {
+    if(/(tell me about)/i.test(text)) {
+      var query = text.split(/(tell me about)/i).pop().replace('the', '').trim()
+      tweetGenerate.getSubjectTweet(query).then(function(status) {
         tweetReply(tweet, status)
       })
-    } else if(/(fcc)/i.test(text)) {
-        tweetGenerate.getSubjectTweet('fcc').then(function(status) {
-          tweetReply(tweet, status)
-        })
     } else {
       var random = Math.random()
       if(random <= 0.85) {
@@ -94,7 +91,7 @@ setInterval(function() {
   tweetGenerate.getSubjectTweet('fcc').then(function(tweet) {
     postTweet(tweet)
   })
-}, 1000000)
+}, 6000000)
 
 
 //Generates a tweet directly from fcc comments about net neutrality
@@ -102,7 +99,7 @@ setInterval(function() {
   tweetGenerate.getSubjectTweet('neutrality').then(function(tweet) {
     postTweet(tweet)
   })
-}, 1500000)
+}, 9000000)
 
 //Calls a python script that accepts an a query and responds appropriatelyish
 var generate_rude = function(query, callback) {
