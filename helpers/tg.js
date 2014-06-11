@@ -88,19 +88,28 @@ var TweetGenerate = function() {
     var tweet;
     var subjectRe = new RegExp(subject, 'i')
     comments.find({text: subjectRe}, function(e, docs) {
-      var sentence = /[^.!?\s][^.!?]*(?:[.!?](?!['"]?\s|$)[^.!?]*)*[.!?]?['"]?(?=\s|$)/g
-      docs = _.shuffle(docs)
-      docs = docs.slice(0, 20)
-      for(var i=0; i < docs.length; i++) {
-        matchArray = docs[i].text.match(sentence)
-        matchArray.forEach(function(match) {
-          if(match.length < 120 && subjectRe.test(match)) {
-            tweet = '"' + match + '" ' + docs[i].url
+      if(docs.length > 0) {
+        var sentence = /[^.!?\s][^.!?]*(?:[.!?](?!['"]?\s|$)[^.!?]*)*[.!?]?['"]?(?=\s|$)/g
+        docs = _.shuffle(docs)
+        docs = docs.slice(0, 20)
+        console.log(docs)
+        for(var i=0; i < docs.length; i++) {
+          matchArray = docs[i].text.match(sentence)
+          matchArray.forEach(function(match) {
+            if(match.length < 120 && subjectRe.test(match)) {
+              tweet = '"' + match + '" ' + docs[i].url
+            }
+
+            if(!tweet && i == docs.length - 1) {
+              deferred.resolve("I dont know about that. Try asking me about something else")
+            }
+          })
+          if(tweet) {
+            deferred.resolve(tweet)
           }
-        })
-        if(tweet) {
-          deferred.resolve(tweet)
         }
+      } else {
+        deferred.resolve("I dont know about that. Try asking me about something else")
       }
     })
     return deferred.promise 
