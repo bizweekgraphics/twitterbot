@@ -5,7 +5,7 @@ Twitter bot loaded with comments from the FCC database. Originally, in pdf form,
 
 To query the twitter bot, tweet "tell me about" followed by your query.
 
-Before running it locally, ask yourself what you're doing with your life, then, set the environmental variables in helpers/tweet.js, finally populate your database 
+Before running it locally, ask yourself what you're doing with your life, set the environmental variables in helpers/tweet.js, and populate your database 
 
 ```
 mongorestore --collection comments --db fcc_with_links backup/dump/fcc_with_links/comments.bson
