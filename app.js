@@ -47,7 +47,7 @@ var stream = twitter.Bot.stream('user')
 stream.on('tweet', function(tweet) {
   console.log('**************tweet**************')
   var reply = tweet.in_reply_to_user_id
-  if(reply && tweet.user.screen_name != 'test43523') {
+  if(reply && tweet.user.screen_name.toLowerCase() != 'fccliefs') {
     var text = tweet.text.replace(/@\w*/, '').trim()
     if(/(tell me about)/i.test(text)) {
       var query = text.split(/(tell me about)/i).pop().replace('the', '').trim()
