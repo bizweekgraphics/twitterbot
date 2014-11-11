@@ -4,6 +4,7 @@ import aiml
 import re
 
 k = aiml.Kernel()
+k.verbose(False)
 
 def load_brain():
   files = os.listdir('./aiml/')

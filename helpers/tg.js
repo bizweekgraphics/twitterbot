@@ -96,7 +96,7 @@ var TweetGenerate = function() {
         for(var i=0; i < docs.length; i++) {
           matchArray = docs[i].text.match(sentence)
           matchArray.forEach(function(match) {
-            if(match.length < 120 && subjectRe.test(match)) {
+            if(match.length < 110 && subjectRe.test(match)) {
               tweet = '"' + match + '" ' + docs[i].url
             }
 
