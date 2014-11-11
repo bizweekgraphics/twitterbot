@@ -52,6 +52,7 @@ stream.on('tweet', function(tweet) {
     if(/(tell me about)/i.test(text)) {
       var query = text.split(/(tell me about)/i).pop().replace('the', '').trim()
       tweetGenerate.getSubjectTweet(query).then(function(status) {
+        console.log(tweet, status)
         tweetReply(tweet, status)
       })
     } else {
@@ -74,6 +75,7 @@ stream.on('tweet', function(tweet) {
 var tweetReply = function(tweet, status) {
   status = profanity.replaceProfanity(status)
   twitter.Bot.post('statuses/update', {status: "@" + tweet.user.screen_name + ' ' + status, in_reply_to_status_id: tweet.id_str, replies: 'all'}, function(err, data, response) {
+    console.log(err);
   })
 }
 
