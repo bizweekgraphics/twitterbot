@@ -81,11 +81,11 @@ var tweetReply = function(tweet, status) {
 
 
 //Generates an if then tweet at the provided interval
-setInterval(function() {
-  tweetGenerate.createTweets().then(function(tweet) {
-    postTweet(tweet)
-  })
-}, 2000000)
+// setInterval(function() {
+//   tweetGenerate.createTweets().then(function(tweet) {
+//     postTweet(tweet)
+//   })
+// }, 2000000)
 
 
 //Generates a tweet directly from the fcc comments database
