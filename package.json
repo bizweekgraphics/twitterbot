@@ -9,6 +9,8 @@
     "ejs": "*",
     "mongodb": "*",
     "monk": "*",
-    "underscore": "*"
+    "underscore": "*",
+    "q": "~1.2.0",
+    "dom-js": "0.0.9"
   }
 }
