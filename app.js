@@ -94,7 +94,7 @@ setInterval(function() {
     console.log(tweet);
     postTweet(tweet)
   })
-}, 12000000)
+}, 40000000)
 
 
 //Generates a tweet directly from fcc comments about net neutrality
@@ -102,7 +102,7 @@ setInterval(function() {
   tweetGenerate.getSubjectTweet('neutrality').then(function(tweet) {
     postTweet(tweet)
   })
-}, 16000000)
+}, 50000000)
 
 //Calls a python script that accepts an a query and responds appropriatelyish
 var generate_rude = function(query, callback) {
