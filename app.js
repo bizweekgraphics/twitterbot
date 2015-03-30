@@ -1,4 +1,5 @@
-//load server and db stuff
+'use strict';
+
 var express = require('express');
 var app = express();
 var http = require('http');
@@ -29,21 +30,21 @@ stream.on('disconnect', function(msg) {
 
 stream.on('tweet', function(tweet) {
   var reply = tweet.in_reply_to_user_id && tweet.user.screen_name.toLowerCase() != 'fccliefs';
-  if(reply) { handleReply(reply) }
+  if(reply) { handleReply(tweet, reply); }
 });
 
-function handleReply(reply) {
-  var text = tweet.text.replace(/@\w*/, '').trim()
+function handleReply(tweet, reply) {
+  var text = tweet.text.replace(/@\w*/, '').trim();
   if(/(tell me about)/i.test(text)) {
-    var query = text.split(/(tell me about)/i).pop().replace('the', '').trim()
+    var query = text.split(/(tell me about)/i).pop().replace('the', '').trim();
     commentDb.getSubjectTweet(query).then(function(status) {
-      console.log(tweet, status)
-      twitter.tweetReply(tweet, status)
-    })
+      console.log(tweet, status);
+      twitter.tweetReply(tweet, status);
+    });
   } else {
     chatBot.generateResponse(text).then(function(status) {
-      twitter.tweetReply(tweet, status)
-    })
+      twitter.tweetReply(tweet, status);
+    });
   }
 }
 
@@ -68,8 +69,8 @@ function handleReply(reply) {
 //Generates a tweet directly from fcc comments about net neutrality
 // setInterval(function() {
   commentDb.getSubjectTweet('neutrality').then(function(tweet) {
-    twitter.postTweet(tweet)
-  })
+    twitter.postTweet(tweet);
+  });
 // }, 50000000)
 
 

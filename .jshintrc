@@ -2,6 +2,7 @@
   "globals": {
     "process": true,
     "require": true,
-    "module": true
+    "module": true,
+    "console": true
   }
 }

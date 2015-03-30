@@ -39,7 +39,7 @@ var commentDb = {
       if(docs.length > 0) {
         self.findTweetInDocs(docs, subjectRe).then(function(response) {
           deferred.resolve(response);
-        })
+        });
       } else {
         deferred.resolve("I dont know about that. Try asking me about something else");
       }
@@ -55,20 +55,21 @@ var commentDb = {
     docs.forEach(function(doc, i) {
       var sentences = doc.text.match(sentenceRe);
       sentences.forEach(function(sentence) {
+        var tweet;
         if(sentence.length < 110 && subjectRe.test(sentence)) {
-          var tweet = '"' + sentence + '" ' + docs[i].url;
+          tweet = '"' + sentence + '" ' + docs[i].url;
           deferred.resolve(tweet);
         }
 
         if(!tweet && i === docs.length - 1) {
           deferred.resolve("I don't know about that. Try asking me about something else");
         }
-      })
-    })
+      });
+    });
 
     return deferred.promise;
   }
 
-}
+};
 
 module.exports = commentDb;

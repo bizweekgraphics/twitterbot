@@ -12,10 +12,10 @@ var chatBot = {
 
     childProcess.exec(execString, function(error, stdout, stderr) {
         deferred.resolve(stdout);
-      })
+      });
     return deferred.promise;
   }
 
-}
+};
 
 module.exports = chatBot;
