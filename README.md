@@ -15,3 +15,9 @@ Run with
 ```
 node app.js
 ```
+
+
+Install AIML
+```
+pip install aiml
+```
