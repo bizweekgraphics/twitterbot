@@ -11,11 +11,6 @@ var commentDb = require('./helpers/comment-db.js');
 var pFilter = require('./helpers/profanity_filter.js');
 var chatBot = require('./helpers/chat-bot.js');
 
-// app.use(function(req, res, next) {
-//   req.db = db;
-//   next();
-// });
-
 server.listen(process.env.PORT || 4000);
 
 var stream = twitter.Bot.stream('user');
@@ -58,20 +53,20 @@ function handleReply(tweet, reply) {
 
 
 //Generates a tweet directly from the fcc comments database
-// setInterval(function() {
+setInterval(function() {
   commentDb.getSubjectTweet('fcc').then(function(tweet) {
     console.log(tweet);
     twitter.postTweet(tweet);
   });
-// }, 40000000)
+}, 40000000)
 
 
 //Generates a tweet directly from fcc comments about net neutrality
-// setInterval(function() {
+setInterval(function() {
   commentDb.getSubjectTweet('neutrality').then(function(tweet) {
     twitter.postTweet(tweet);
   });
-// }, 50000000)
+}, 50000000)
 
 
 
